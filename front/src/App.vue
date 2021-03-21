@@ -6,7 +6,8 @@
         <div className="col-md-4" id="app">
             <GChart
                     :data="chartData"
-                    :options="options"
+                    :options="{title: 'Температура в горде ' + SelectedValue+ ' за следующий год',
+                    'explorer.maxZoomIn': 0.5}"
                     :settings="{'packages':['corechart'],language: 'ru'}"
                     ref="gChart"
                     type="LineChart"
@@ -16,7 +17,7 @@
                 <label>Enter some text here:</label>
             </labelAplpha>
             <br>
-            <multiselect :options="options" v-model="SelectedValue"></multiselect>
+            <multiselect :options="city_names" v-model="SelectedValue"></multiselect>
             <br>
         </div>
     </div>
@@ -37,44 +38,25 @@
                 loading: true,
                 datum: [],
                 SelectedValue: "Алмазный",
-                options: ["Алмазный", "Западный", "Курортный", "Лесной", "Научный", "Полярный", "Портовый", "Приморский", "Садовый", "Северный", "Степной", "Таежный", "Южный"]
+                city_names: ["Алмазный", "Западный", "Курортный", "Лесной", "Научный", "Полярный", "Портовый", "Приморский", "Садовый", "Северный", "Степной", "Таежный", "Южный"],
             }
         },
         methods: {
-            sendInputString: async function () {
-                console.log("alpha")
-                const resp = await fetch('http://localhost:5050/gettingTags', {
-                    method: "POST",
-                    body: JSON.stringify({
-                        value: this.SelectedValue
-                    }),
-                    headers: {
-                        "Content-Type": 'application/json'
-                    }
-                })
-                const jsn = await resp.json()
-                this.options = jsn.hashtags
-            }
         },
         computed: {
             chartData: function () {
                 let a = [['Date', 'Temperature']]
-                this.allData.forEach((el) => {
-                    a.push(parseInt(el.id), parseInt(el.temp))
+                this.allPredData.forEach((el) => {
+                    a.push([parseInt(el.id), parseInt(el.temp)])
                 })
                 return a
             },
-            allData: function () {
-                return this.datum
-            },
             allPredData: function () {
-                //let s = this.SelectedValue + "P"
-                //return this.datum.[s]
-                return this.datum
+                return this.datum[this.SelectedValue+"P"].slice(7301,7667)
             }
         },
         async mounted() {
-            const city_names = ["Алмазный", "Западный", "Курортный", "Лесной", "Научный", "Полярный", "Портовый", "Приморский", "Садовый", "Северный", "Степной", "Таежный", "Южный"]
+            const city_names = ["АлмазныйP", "ЗападныйP", "КурортныйP", "ЛеснойP", "НаучныйP", "ПолярныйP", "ПортовыйP", "ПриморскийP", "СадовыйP", "СеверныйP", "СтепнойP", "ТаежныйP", "ЮжныйP"]
             for (let city of city_names) {
                 console.log(city)
                 const resp = await fetch(`http://195.133.147.101:5000/getcity?city=${city}`, {
