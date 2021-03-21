@@ -4,7 +4,7 @@
     </div>
     <div v-else>
         <div className="col-md-4" id="app">
-            <GChart
+          <GChart
                     :data="chartData"
                     :options="{title: 'Температура в горде ' + SelectedValue+ ' за следующий год',
                     'explorer.maxZoomIn': 0.5}"
@@ -18,6 +18,11 @@
             </labelAplpha>
             <br>
             <multiselect :options="city_names" v-model="SelectedValue"></multiselect>
+          <br>
+          <labelAplpha>
+            <label>Выберите время:</label>
+          </labelAplpha>
+            <multiselect :options="datum_list" v-model="Selected"></multiselect>
             <br>
             <h2>График медиан города {{SelectedValue}} за 20 лет</h2>
             <GChart  type="LineChart"
@@ -26,15 +31,7 @@
 
 
 
-          <el-date-picker
-              :picker-options="pickerOptions"
-              align="right"
-              end-placeholder="End date"
-              range-separator="To"
-              start-placeholder="Start date"
-              type="datetimerange"
-              v-model="date">
-          </el-date-picker>
+
         </div>
     </div>
 </template>
@@ -54,6 +51,8 @@
                 loading: true,
                 datum: [],
                 date:[],
+                Selected: "All",
+                datum_list: ["Day", "Week", "Month", "All"],
                 SelectedValue: "Алмазный",
                 city_names: ["Алмазный", "Западный", "Курортный", "Лесной", "Научный", "Полярный", "Портовый", "Приморский", "Садовый", "Северный", "Степной", "Таежный", "Южный"],
             }
@@ -89,7 +88,19 @@
                 return a
             },
             allPredData: function () {
-                return this.datum[this.SelectedValue+"P"].slice(7301,7667)
+              if(this.Selected == "All") {
+                return this.datum[this.SelectedValue + "P"].slice(7301, 7667)
+              }
+              else if (this.Selected == "Day"){
+                return this.datum[this.SelectedValue + "P"].slice(7301, 7302)
+              }
+              else if (this.Selected == "Week"){
+                return this.datum[this.SelectedValue + "P"].slice(7301, 7309)
+              }
+              else
+              {
+                return this.datum[this.SelectedValue + "P"].slice(7301, 7332)
+              }
             }
         },
         async mounted() {
