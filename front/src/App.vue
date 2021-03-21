@@ -14,11 +14,18 @@
             />
             <br>
             <labelAplpha>
-                <label>Enter some text here:</label>
+                <label>Выберите город:</label>
             </labelAplpha>
             <br>
             <multiselect :options="city_names" v-model="SelectedValue"></multiselect>
             <br>
+            <h2>График медиан города {{SelectedValue}} за 20 лет</h2>
+            <GChart  type="LineChart"
+                     :settings="{'packages':['corechart'],language: 'ru'}"
+                     :data="medianData"/>
+
+
+
           <el-date-picker
               :picker-options="pickerOptions"
               align="right"
@@ -59,6 +66,26 @@
                 this.allPredData.forEach((el) => {
                     a.push([parseInt(el.id), parseInt(el.temp)])
                 })
+                return a
+            },
+            medianData: function(){
+                let a = [['Year', 'Median']]
+                let oldData = this.datum[this.SelectedValue+"P"].slice(0,7301)
+                function median(values) {
+
+                    values.sort( function(a,b) {return a - b;} );
+
+                    var half = Math.floor(values.length/2);
+
+                    if(values.length % 2)
+                        return values[half];
+                    else
+                        return (values[half-1] + values[half]) / 2.0;
+                }
+                for(let i=0;i<21;i++){
+                    a.push([i, median(oldData.slice(i*365,(i+1)*365)).temp])
+                }
+                console.log(a)
                 return a
             },
             allPredData: function () {
