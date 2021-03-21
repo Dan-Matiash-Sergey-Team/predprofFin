@@ -1,2 +1,0 @@
-# predprofFin
-Final predprof project
