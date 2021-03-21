@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "vue-google-charts": "^0.3.3",
+    "vue-multiselect": "^2.1.6"
+  }
+}
