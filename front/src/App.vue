@@ -19,6 +19,15 @@
             <br>
             <multiselect :options="city_names" v-model="SelectedValue"></multiselect>
             <br>
+          <el-date-picker
+              :picker-options="pickerOptions"
+              align="right"
+              end-placeholder="End date"
+              range-separator="To"
+              start-placeholder="Start date"
+              type="datetimerange"
+              v-model="date">
+          </el-date-picker>
         </div>
     </div>
 </template>
@@ -37,6 +46,7 @@
             return {
                 loading: true,
                 datum: [],
+                date:[],
                 SelectedValue: "Алмазный",
                 city_names: ["Алмазный", "Западный", "Курортный", "Лесной", "Научный", "Полярный", "Портовый", "Приморский", "Садовый", "Северный", "Степной", "Таежный", "Южный"],
             }
